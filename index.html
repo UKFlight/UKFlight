@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UKFlight - Free Flight Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(157, 78, 221, 0.3);
+            }
+            50% {
+                box-shadow: 0 6px 25px rgba(157, 78, 221, 0.6);
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0d0221 0%, #1a0033 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #0d0221 0%, #1a0033 100%);
+            border-bottom: 2px solid #9d4edd;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(157, 78, 221, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffd60a;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 214, 10, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #c8b6ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #9d4edd;
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #9d4edd, #ffd60a);
+            animation: slideInRight 0.5s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0d0221 0%, #1a0033 50%, #2a0845 100%);
+            padding: 8rem 2rem;
+            text-align: center;
+            border-bottom: 2px solid #9d4edd;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(157, 78, 221, 0.1), transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #ffd60a 0%, #9d4edd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 0 30px rgba(157, 78, 221, 0.3);
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: #c8b6ff;
+            margin-bottom: 0.5rem;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a899c4;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #9d4edd 0%, #5a189a 100%);
+            color: #ffd60a;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(157, 78, 221, 0.4);
+            border: 2px solid #ffd60a;
+            cursor: pointer;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(157, 78, 221, 0.6);
+            background: linear-gradient(135deg, #5a189a 0%, #9d4edd 100%);
+        }
+
+        /* Info Section */
+        .info {
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, #0d0221 0%, #1a0033 100%);
+        }
+
+        .info-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #2a0845 0%, #1a0033 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #9d4edd;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            border-color: #ffd60a;
+            box-shadow: 0 8px 30px rgba(157, 78, 221, 0.3);
+        }
+
+        .info-card h3 {
+            color: #ffd60a;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-card h3::before {
+            content: '◆';
+            color: #9d4edd;
+            font-size: 0.9rem;
+        }
+
+        .info-card p {
+            color: #c8b6ff;
+        }
+
+        /* Page Content */
+        .page {
+            display: none;
+            padding: 4rem 2rem;
+            min-height: calc(100vh - 200px);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .page h1 {
+            color: #ffd60a;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page h1::before {
+            content: '✦';
+            color: #9d4edd;
+            font-size: 1.8rem;
+        }
+
+        .page h2 {
+            color: #ffd60a;
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page h2::before {
+            content: '►';
+            color: #9d4edd;
+            font-size: 1.2rem;
+        }
+
+        .page h3 {
+            color: #c8b6ff;
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page h3::before {
+            content: '◈';
+            color: #ffd60a;
+            font-size: 1rem;
+        }
+
+        .page p {
+            color: #c8b6ff;
+            margin-bottom: 1rem;
+        }
+
+        .page ul {
+            color: #c8b6ff;
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .page li {
+            margin-bottom: 0.5rem;
+        }
+
+        .page a {
+            color: #ffd60a;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .page a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ffd60a, #9d4edd);
+            transition: width 0.3s ease;
+        }
+
+        .page a:hover::after {
+            width: 100%;
+        }
+
+        /* Features List */
+        .features-list {
+            list-style-type: none;
+            margin-left: 0 !important;
+        }
+
+        .features-list li {
+            padding-left: 2rem;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .features-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #9d4edd;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Download Card */
+        .download-card {
+            background: linear-gradient(135deg, #2a0845 0%, #1a0033 100%);
+            border: 2px solid #9d4edd;
+            border-radius: 12px;
+            padding: 3rem;
+            margin: 2rem 0;
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .download-card:hover {
+            border-color: #ffd60a;
+            box-shadow: 0 8px 30px rgba(157, 78, 221, 0.3);
+        }
+
+        .version {
+            color: #ffd60a;
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+            font-weight: 600;
+        }
+
+        .release-date {
+            color: #a899c4;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .system-requirements {
+            text-align: left;
+            background: linear-gradient(135deg, #1a0033 0%, #0d0221 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            border-left: 3px solid #ffd60a;
+        }
+
+        .system-requirements h3 {
+            margin-top: 0;
+        }
+
+        .system-requirements ul {
+            margin-left: 1.5rem;
+        }
+
+        .download-button {
+            background: linear-gradient(135deg, #9d4edd 0%, #5a189a 100%);
+            color: #ffd60a;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 2px solid #ffd60a;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(157, 78, 221, 0.4);
+        }
+
+        .download-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(157, 78, 221, 0.6);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #2a0845 0%, #1a0033 100%);
+            border-left: 4px solid #ffd60a;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            border: 1px solid #9d4edd;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+        }
+
+        /* License Text */
+        .license-text {
+            background: linear-gradient(135deg, #2a0845 0%, #1a0033 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #9d4edd;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .license-text h2 {
+            margin-top: 0;
+        }
+
+        .license-text ul {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(90deg, #0d0221 0%, #1a0033 100%);
+            border-top: 2px solid #9d4edd;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #a899c4;
+            box-shadow: 0 -4px 20px rgba(157, 78, 221, 0.1);
+        }
+
+        .footer p {
+            margin: 0.5rem 0;
+        }
+
+        .footer-section {
+            margin: 1.5rem 0;
+        }
+
+        .footer-section-title {
+            color: #ffd60a;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .social-links a {
+            color: #c8b6ff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .social-links a:hover {
+            color: #ffd60a;
+            transform: translateY(-2px);
+        }
+
+        .contact-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #9d4edd 0%, #5a189a 100%);
+            color: #ffd60a;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid #ffd60a;
+            font-weight: 600;
+            margin: 0.5rem;
+        }
+
+        .contact-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(157, 78, 221, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+
+            .page h1 {
+                font-size: 2rem;
+            }
+
+            .download-card {
+                padding: 1.5rem;
+            }
+
+            .info-container {
+                grid-template-columns: 1fr;
+            }
+
+            .social-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">UKFlight</div>
+            <ul class="nav-links">
+                <li><a onclick="showPage('home')" class="nav-link active">Home</a></li>
+                <li><a onclick="showPage('about')" class="nav-link">About</a></li>
+                <li><a onclick="showPage('download')" class="nav-link">Download</a></li>
+                <li><a onclick="showPage('license')" class="nav-link">License</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>UKFlight</h1>
+                <p class="tagline">A free flight simulator accessible on any PC</p>
+                <p class="subtitle">Minimum requirements: 4GB RAM</p>
+                <button class="cta-button" onclick="showPage('download')">Download Now</button>
+            </div>
+        </section>
+
+        <section class="info">
+            <div class="info-container">
+                <div class="info-card">
+                    <h3>Built on Godot</h3>
+                    <p>Lightweight and optimized for low-spec hardware</p>
+                </div>
+                <div class="info-card">
+                    <h3>UK & Ireland</h3>
+                    <p>Explore authentic airports and regions across the British Isles</p>
+                </div>
+                <div class="info-card">
+                    <h3>Arcade Physics</h3>
+                    <p>Accessible flight model that feels responsive and intuitive</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ABOUT PAGE -->
+    <div id="about" class="page">
+        <div class="page-container">
+            <h1>About UKFlight</h1>
+            
+            <h2>What is UKFlight?</h2>
+            <p>UKFlight is a free, open-source flight simulator built in Godot Engine. It brings authentic flight simulation to PC systems of all specs, with a focus on the United Kingdom and Ireland regions.</p>
+
+            <h2>Why UKFlight?</h2>
+            <p>Most flight simulators require high-end hardware or significant financial investment. UKFlight changes that. We believe everyone should have access to a quality flight sim experience, regardless of their computer's specs.</p>
+
+            <h2>Key Features</h2>
+            <ul class="features-list">
+                <li>Lightweight Godot engine — runs on minimal specs</li>
+                <li>Authentic UK and Ireland airspace and airports</li>
+                <li>Intuitive arcade-style flight physics</li>
+                <li>Multiple realistic aircraft models</li>
+                <li>Completely free, no paywalls or DLC</li>
+            </ul>
+
+            <h2>Technology</h2>
+            <p>UKFlight is built entirely on the Godot Engine, a powerful yet lightweight game engine perfect for accessible software. This choice allows us to deliver a premium flight sim experience without requiring high-end gaming hardware.</p>
+
+            <h2>Our Vision</h2>
+            <p>We're building UKFlight to be the go-to flight simulator for casual pilots and enthusiasts who want a genuine flying experience without the barriers to entry. Updates will continue to add new aircraft, airports, and features as the project grows.</p>
+        </div>
+    </div>
+
+    <!-- DOWNLOAD PAGE -->
+    <div id="download" class="page">
+        <div class="page-container">
+            <h1>Download UKFlight</h1>
+
+            <div class="download-card">
+                <h2>Latest Release</h2>
+                <p class="version">Version 0.1.0 - Alpha</p>
+                <p class="release-date">Coming Soon</p>
+                
+                <div class="system-requirements">
+                    <h3>Minimum System Requirements</h3>
+                    <ul>
+                        <li>OS: Windows 10/11 or Linux</li>
+                        <li>RAM: 4GB minimum</li>
+                        <li>Storage: 5GB available space</li>
+                        <li>Graphics: Integrated graphics supported</li>
+                    </ul>
+                </div>
+
+                <button class="download-button" id="downloadBtn">Download Now</button>
+            </div>
+
+            <div class="info-box">
+                <h3>About the Alpha</h3>
+                <p>UKFlight is currently in active development. The alpha release includes the core flight mechanics, a selection of UK airports, and multiple aircraft. Expect regular updates and improvements.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Get Updates</h3>
+                <p>Follow us on <a href="https://www.tiktok.com/@ukflight" target="_blank">TikTok</a> for development updates, progress videos, and release announcements.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- LICENSE PAGE -->
+    <div id="license" class="page">
+        <div class="page-container">
+            <h1>License</h1>
+
+            <div class="license-text">
+                <h2>UKFlight - All Rights Reserved</h2>
+                
+                <p><strong>© UKFlight 2026, All rights reserved.</strong></p>
+
+                <p><strong>This website code is proprietary and not available for use, modification, or distribution without explicit permission from the creator.</strong></p>
+
+                <h3>Software License</h3>
+                <p>UKFlight is provided as-is for personal, non-commercial use only. You may:</p>
+                <ul>
+                    <li>Download and install UKFlight on your personal computer</li>
+                    <li>Use UKFlight for personal entertainment and education</li>
+                </ul>
+
+                <p>You may not:</p>
+                <ul>
+                    <li>Modify, reverse engineer, or decompile the software</li>
+                    <li>Distribute, sell, or rent UKFlight or any part of it</li>
+                    <li>Create derivative works based on UKFlight</li>
+                    <li>Use UKFlight for commercial purposes</li>
+                </ul>
+
+                <h3>Disclaimer</h3>
+                <p>UKFlight is provided "as is" without warranty of any kind, express or implied. The creators assume no responsibility for any damage or data loss resulting from the use of this software.</p>
+
+                <h3>Third-Party Assets</h3>
+                <p>UKFlight uses the Godot Engine, which is provided under the MIT License. See the Godot project for more details: <a href="https://godotengine.org" target="_blank">https://godotengine.org</a></p>
+
+                <h3>Questions?</h3>
+                <p>For licensing inquiries, please contact us through our GitHub repository or TikTok.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 UKFlight. All rights reserved.</p>
+
+        <div class="footer-section">
+            <div class="footer-section-title">Follow Us</div>
+            <div class="social-links">
+                <a href="https://www.tiktok.com/@ukflight" target="_blank">TikTok</a>
+                <a href="https://github.com/UKFlight/UKFlight" target="_blank">GitHub</a>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <div class="footer-section-title">Contact Support</div>
+            <a href="mailto:archdeck9@gmail.com?subject=UKFlight%20Support%20Request" class="contact-link">Send Email</a>
+        </div>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Update nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Handle download button
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', function() {
+                    console.log('Download button clicked');
+                    // When you have a download link, replace this with:
+                    // window.location.href = 'https://your-download-link.com/ukflight.zip';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
