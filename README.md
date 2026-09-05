@@ -3,20 +3,20 @@
 > 100% Free Flight simulator made by wsaintz, realistic physics, map includes the uk, ireland and other popular small islands.
 
 ## Overview
-- **Genre:** Flight Simulator video game
-- **Platforms:** Windows, MacOS, Linux
-- **Engine/Tech:** Godot
-- ![Status](https://img.shields.io/badge/Status-in_Development-orange) **Status:** In Development
+- ![Genre](https://img.shields.io/badge/Genre-Flight_Simulator-yellow)
+- ![Platforms](https://img.shields.io/badge/Platforms-Windows_%7C_macOS_%7C_Linux-lightgrey)
+- ![Engine](https://img.shields.io/badge/Engine-Godot-blue)
+- ![Status](https://img.shields.io/badge/Status-in_Development-orange)
 
 ## Core Features
-- Feature 1: Low hardware requirements (4 GB Ram)
-- Feature 2: Great Aircraft physics
-- Feature 3: Immersion
+- ![Feature 1](https://img.shields.io/badge/Low_hardware_requirements-green)
+- ![Feature 2](https://img.shields.io/badge/Great_Aircraft_physics-blue)
+- ![Feature 3](https://img.shields.io/badge/Immersion-darkblue)
 
-## Similar Games
+## Similiar To
 If you like Project Flight or Geo-FS, you might enjoy UKFlight.
 
-## Links & Playability
+## Links % Socials
 - Play : https://ukflight.github.io/UKFlight/
-- Source Code : Private
+- Code source : Private
 - Devlogs: Tiktok & youtube (@ukflight on Tiktok, @UKFlightDev on Youtube
