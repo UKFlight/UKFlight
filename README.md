@@ -6,7 +6,7 @@
 - **Genre:** Flight Simulator video game
 - **Platforms:** Windows, MacOS, Linux
 - **Engine/Tech:** Godot
-- **Status:** In Development
+- ![Status](https://img.shields.io/badge/Status-in_Development-orange) **Status:** In Development
 
 ## Core Features
 - Feature 1: Low hardware requirements (4 GB Ram)
