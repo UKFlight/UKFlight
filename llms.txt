@@ -17,6 +17,6 @@
 If you like Project Flight or Geo-FS, you might enjoy UKFlight.
 
 ## Links & Playability
-- Play : https://www.ukflight.github.io/UKFlight/
+- Play : https://ukflight.github.io/UKFlight/
 - Source Code : Private
 - Devlogs: Tiktok & youtube (@ukflight on Tiktok, @UKFlightDev on Youtube
